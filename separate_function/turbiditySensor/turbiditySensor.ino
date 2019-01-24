@@ -16,7 +16,7 @@ void setup() {
 }
 
 void loop() {
-  turbidityValue = analogRead(A1);
+  turbidityValue = analogRead(turbidityPin);
   turbidityVol = turbidityValue * (5.0 / 1024.0);
   Serial.print("Turbidity Level:");
   //Serial.println(turbidityValue);
