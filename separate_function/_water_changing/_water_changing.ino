@@ -9,7 +9,7 @@
  **************/
 
 const int turbidityPin = A1;
-const int pumpPin = 11; //pump attaches to digital 13
+const int pumpPin = 11; //pump attaches to digital 11
 float turbidityVol = 0.0; //initialize
 
 void setup() {

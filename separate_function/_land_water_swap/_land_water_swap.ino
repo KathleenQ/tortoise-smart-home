@@ -5,7 +5,7 @@
  * if "brightness >= " && condition "board up", open "drop-down relay" for a while
  ***************/
  
-const int brightnessPin = 0;
+const int brightnessPin = A0;
 const int upRelayPin = 2; //"pull-on relay" attach to digital 2
 const int downRelayPin = 4; //"drop-down relay" attach to digital 4
 boolean boardUp = false; //board condition: "true" for board up, "false" for board down

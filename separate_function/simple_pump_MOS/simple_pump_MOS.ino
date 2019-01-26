@@ -3,7 +3,7 @@
  * (pay attention to the line connection ~ )
  *************/
 
-const int pumpPin = 13; //pump attaches to digital 13
+const int pumpPin = 11; //pump attaches to digital 11
 
 void setup() {
   pinMode(pumpPin, OUTPUT);
