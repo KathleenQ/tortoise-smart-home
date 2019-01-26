@@ -1,10 +1,8 @@
 /****************
- * (Jan26) Use of Water-proof Temperature Sensor
- * In the "Temperature" function, 
- * we will only get temperature data of the water,
- * and later send real-time message to the website.
- * Line Connection: S->digital port, '-'->GND, '+'->5V
- * 
+ * (Jan26) Use of Water-proof Temperature Sensor [Temperature]
+ * In the "Temperature" function, we will only get temperature sensor data of water,
+ * and later send real-time message to the website, to let owner take further actions themselves (open heater remotely...).
+ * Line Connection: S->digital port, '-'->GND, '+'->5V.
  * REFERENCE: "example1_Arduino" in http://www.alsrobot.cn/wiki/index.php/SKU:RB-02S160_DS18B20_%E6%B0%B4%E6%B8%A9%E4%BC%A0%E6%84%9F%E5%99%A8
 ****************/
 
