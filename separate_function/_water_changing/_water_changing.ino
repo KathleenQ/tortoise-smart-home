@@ -23,15 +23,15 @@ void loop() {
   turbidityVol = turbidityValue * (5.0 / 1024.0); //convert the "read turbidity value" (0-1023) to voltage (0-5V)
   Serial.print("Turbidity Voltage:");
   Serial.print(turbidityVol);
-  if (turbidityVol < 1.8) // for test; [3.6V] ideally(scientifically) set "< 4.1-0.3=3.8 V"
+  if(turbidityVol < 1.8) // for test; [3.6V] ideally(scientifically) set "< 4.1-0.3=3.8 V"
   {
     digitalWrite(pumpPin, HIGH); //turn ON pump
-    Serial.println("Pump ON");
+    Serial.println(" Pump ON");
   }
   else
   {
     digitalWrite(pumpPin, LOW); //turn OFF pump
-    Serial.println("Pump OFF");
+    Serial.println(" Pump OFF");
   }
   delay(5000);
 }
