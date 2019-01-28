@@ -4,7 +4,7 @@
  * (Also get "MyRealTimeClock" DS1302 library from the above website~)
  * Line Connection: VCC(+5V); GND; RTC(~CLK, I/O, RST) (e.g. RTC(6, 7, 8)).
  * SET the current time and date in specific FORMAT: 
- * | Seconds 00 | Minutes 39 | Hours 22 [0-24] | DayOfWeek 7 (i.e.Sunday) | DayOfMonth 27 | Month 01 | Year 2019 |
+ * | Seconds 00 | Minutes 39 | Hours 22 [0-24] | DayOfWeek 07 (i.e.Sunday) | DayOfMonth 27 | Month 01 | Year 2019 |
  * --> print out as "Real Time: 27/1/2019 Sun 22:39:0"
  *****************/
 

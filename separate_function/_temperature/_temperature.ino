@@ -10,7 +10,7 @@ unsigned char temp_reset();
 void temp_write(char WRT);
 unsigned char temp_read();
 
-const int tempPin = 7; //digital port 7
+const int tempPin = 12; //digital port 12
 float temperature = 0.0;
 
 void setup() {
