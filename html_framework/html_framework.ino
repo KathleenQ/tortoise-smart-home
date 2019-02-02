@@ -1,7 +1,7 @@
-/*
+/****************
  * (Feb02) Beginning of "framework": WiFi connection and basic HTML
  * REFERENCE: "WiFiWebServer" in WiFiNINA library (for the Arduino Uno WiFi R2 board) 
- */
+ ****************/
 
 #include <SPI.h>
 #include <WiFiNINA.h>
