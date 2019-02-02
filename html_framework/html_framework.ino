@@ -61,7 +61,12 @@ void loop() {
           client.println("<html>");
 
           // REAL Contents part!
-          client.println("Hello World");
+          client.println("<head>Kathleen's 2019 Summer <b>IoT</b> Project");
+          client.println("<body>");
+          client.println("<h1>Tortoise Smart Home</h1>");
+
+          client.println("<h2><i>Function:</i></h2>");
+          client.println("</body>");
           // END~
 
           client.println("</html>");
