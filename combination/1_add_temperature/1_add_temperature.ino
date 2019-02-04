@@ -1,6 +1,6 @@
 /****************
- * (Feb03) Add the 1st function: Temperature (combine "_temperature" file)
- * Use of Water-proof Temperature Sensor & OLED
+ * (Feb03) Add the 1st function: Temperature (combine "_temperature", without OLED function)
+ * Use of Water-proof Temperature Sensor
  * We will get data from water temperature sensor, show it on OLED screen, and send real-time message to the website, 
  * to let owner take further actions themselves (open heater remotely...).
  * 
