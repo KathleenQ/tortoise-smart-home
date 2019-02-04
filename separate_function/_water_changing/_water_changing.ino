@@ -5,7 +5,9 @@
  * if "turbidity voltage < 'normal level'" (more turbid), turn ON the pump
  * 'normol level' --> 4.1 +- 0.3 V (shown in shop's product information) 【？？？？？】
  * (more turbid, output VALUE is smaller)
- * turbity sensor connection: Black->GND, Red->5V, Blue->AnalogIn
+ * CONNECTION:
+ * Turbity sensor: Black->GND, Red->5V, Blue->AnalogIn
+ * Pump with MOS module: {smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND
  **************/
 
 const int turbidityPin = A1;

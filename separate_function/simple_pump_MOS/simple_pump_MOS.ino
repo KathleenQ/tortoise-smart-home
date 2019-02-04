@@ -1,6 +1,7 @@
 /*************
  * (Jan23) basic use of pump & MOS module
- * (pay attention to the line connection ~ )
+ * pay attention to the Line Connection:
+ * {smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND
  *************/
 
 const int pumpPin = 11; //pump attaches to digital 11
