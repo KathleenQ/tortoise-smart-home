@@ -5,9 +5,11 @@
 
    Brief Explanation:
    We will use real time to seperate various functions~
+   EVEN Minute:
    Temp: We will get data from water temperature sensor, show it on OLED screen,
    and send real-time message to the website, to let owner take further actions themselves.
-   Water Change: If more turbid than "normal level" (?), turn ON the pump.
+   ODD Minute:
+   Water Change: If more turbid than "normal level", turn ON the pump.
    (More turbid, output VALUE is smaller.)
 
    Line CONNECTION:
@@ -20,10 +22,6 @@
 #include <SPI.h>
 #include <WiFiNINA.h>
 #include "wifi_secret.h"
-//"Temperature"
-//#include <Wire.h>
-//#include <Adafruit_GFX.h>
-//#include <Adafruit_SSD1306.h>
 //Real-time Clock
 #include <ThreeWire.h>
 #include <RtcDS1302.h>
@@ -41,20 +39,18 @@ int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
 //"Temperature"
-//#define OLED_RESET 4
-//Adafruit_SSD1306 display(OLED_RESET);
 const int tempPin = 12;
 float temperature = 0.0;
 
 //"Water Changing"
 const int turbidityPin = A1;
 const int pumpPin = 11;
-const float turbidityStandard = 1.2; //(?) Check later! Ideally(scientifically) set "< 4.1-0.3=3.8 V".
+const float turbidityStandard = 3; //(?) Check later! Ideally(scientifically) set "< 4.1-0.3=3.8 V".
 float turbidityVol = 0.0;
 boolean pumpOn = false; //use for website condition shown
 
 //Real-time Clock
-ThreeWire myWire(7, 6, 8); // Connection: I/O, CLK, RST
+ThreeWire myWire(7, 6, 8); // Connection: myWire(I/O, CLK, RST)
 RtcDS1302<ThreeWire> Rtc(myWire);
 
 
@@ -111,39 +107,47 @@ void loop() {
   //Real-time Clock
   RtcDateTime now = Rtc.GetDateTime();
 
-  //"Temperture" function
-  if (!temp_reset()) {
-    temp_write(0xCC); //"Skip_ROM"
-    temp_write(0x44); //"Convert_T"
-    delay(750); //(?)
-    temp_reset();
-    temp_write(0xCC); //"Skip_ROM"
-    temp_write(0xBE); //"Read_scratchpad"
-    unsigned short tempL = temp_read();
-    unsigned short tempH = temp_read();
-    unsigned int temp = ((unsigned int)tempH << 8) + (unsigned int)tempL;
-    temp = (float)temp * 6.25;
-    temperature = (float)temp / 100; //Get the REAL "temperature" value~
-    Serial.print("Temperature:");
-    Serial.println(temperature);
-  }
-  //  displayTemp();
-  //  display.display();
-
-  //"Water Changing" function
-  int turbidityValue = analogRead(turbidityPin);
-  turbidityVol = turbidityValue * (5.0 / 1024.0); //convert the "read turbidity value" (0-1023) to voltage (0-5V)
-  Serial.print("Turbidity Voltage:");
-  Serial.print(turbidityVol);
-  if (turbidityVol < turbidityStandard) {
-    digitalWrite(pumpPin, HIGH); //turn ON pump
-    Serial.println(" Pump ON");
-    pumpOn = true;
-  }
-  else {
+  if (now.Minute() % 2 == 0) //"even" minute -> temperature, NO water changing
+  {
     digitalWrite(pumpPin, LOW); //turn OFF pump
-    Serial.println(" Pump OFF");
     pumpOn = false;
+
+    //"Temperture" function
+    if (!temp_reset()) {
+      temp_write(0xCC); //"Skip_ROM"
+      temp_write(0x44); //"Convert_T"
+      delay(750);
+      temp_reset();
+      temp_write(0xCC); //"Skip_ROM"
+      temp_write(0xBE); //"Read_scratchpad"
+      unsigned short tempL = temp_read();
+      unsigned short tempH = temp_read();
+      unsigned int temp = ((unsigned int)tempH << 8) + (unsigned int)tempL;
+      temp = (float)temp * 6.25;
+      temperature = (float)temp / 100; //Get the REAL "temperature" value~
+      Serial.print("Temperature:");
+      Serial.println(temperature);
+    }
+    
+  }
+  else //"odd" minute -> water changing, No temperature
+  {
+    //"Water Changing" function
+    int turbidityValue = analogRead(turbidityPin);
+    turbidityVol = turbidityValue * (5.0 / 1024.0); //convert the "read turbidity value" (0-1023) to voltage (0-5V)
+    Serial.print("Turbidity Voltage:");
+    Serial.print(turbidityVol);
+    if (turbidityVol < turbidityStandard) {
+      digitalWrite(pumpPin, HIGH); //turn ON pump
+      Serial.println(" Pump ON");
+      pumpOn = true;
+    }
+    else {
+      digitalWrite(pumpPin, LOW); //turn OFF pump
+      Serial.println(" Pump OFF");
+      pumpOn = false;
+    }
+    
   }
 
   //WiFi Connection
@@ -169,7 +173,7 @@ void loop() {
           client.println("<h1>Tortoise Smart Home</h1>");
 
           //Real-time Clock
-          client.print("<h3>Current Time: ");
+          client.print("<h3><i>Current Time:</i>   ");
           client.print(now.Day());
           client.print("/");
           client.print(now.Month());
@@ -236,20 +240,6 @@ void printWifiStatus() {
   Serial.print("IP Address: ");
   Serial.println(ip);
 }
-
-//for OLED screen
-//void displayTemp(){
-//  delay(2000); //(?) website test~
-//  display.clearDisplay();
-//  display.setTextColor(WHITE);
-//  display.setTextSize(1);
-//  display.setCursor(0,5);
-//  display.print("Water Temperature:");
-//  display.setTextSize(2);
-//  display.setCursor(0,15);
-//  display.print(temperature);
-//  display.print(" C");
-//}
 
 //for water temperature sensor
 unsigned char temp_reset()
