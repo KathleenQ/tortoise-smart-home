@@ -1,7 +1,7 @@
 /****************
-   (Feb05) Add the 2nd function: Water Changing (combine "_water_changing" & "realTime_clock_RtcDS1302")
+   (Feb06) Add the 3rd function: Lighting (combine "_lighting")
    Use: Water-proof temperature sensor, Turbidity sensor, Pump (with MOS module),
-        Real-time clock module.
+        Real-time clock module, LED lamp.
 
    Brief Explanation:
    We will use real time to seperate various functions~
@@ -11,11 +11,14 @@
    ODD Minute:
    Water Change: If more turbid than "normal level", turn ON the pump.
    (More turbid, output VALUE is smaller.)
+   Light: Remotely controlled through website.
+   (Have 3 basic led brightness level: "low", "medium", "high".)
 
    Line CONNECTION:
    (OLED: VCC->3.3V;) Turbidity Sensor:Black->GND,Red->5V,Blue->AnalogIn;
    Pump with MOS module:{smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND;
-   Real-time clock: myWire(I/O, ~CLK, RST).
+   Real-time clock: myWire(I/O, ~CLK, RST);
+   LED: DIM->brightness level "PWM~" control or HIGH/LOW digital control.
  ****************/
 
 //WiFi Connection
@@ -29,7 +32,6 @@
 unsigned char temp_reset();
 void temp_write(char WRT);
 unsigned char temp_read();
-
 
 //WiFi Connection
 char ssid[] = SECRET_SSID; // CHANGE actual ssid & password in "wifi_secret.h"
@@ -53,11 +55,19 @@ boolean pumpOn = false; //use for website condition shown
 ThreeWire myWire(7, 6, 8); // Connection: myWire(I/O, CLK, RST)
 RtcDS1302<ThreeWire> Rtc(myWire);
 
+//"Lighting"
+const int ledPin = 5; //LED attaches to PWM(Pulse Width Modulation) ~5
+const int noLED = 0; //Higher "ledLevel" value, Brighter~
+const int lowLED = 1;
+const int mediumLED = 2;
+const int highLED = 4; //(real test) reasonable brightness levels in RANGE 0-255
+String ledCondition = "OFF";
 
 void setup() {
   //  Wire.begin();
   //  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); //initialize with the I2C addr 0x3C (for the 128x32)(initializing the display)
   pinMode(pumpPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 
   Serial.begin(9600); //(?) initialize serial and wait for port to open:
 
@@ -97,7 +107,6 @@ void setup() {
   }
   server.begin();
   printWifiStatus(); //you're connected now, so print out the status
-
 }
 
 
@@ -128,7 +137,6 @@ void loop() {
       Serial.print("Temperature:");
       Serial.println(temperature);
     }
-    
   }
   else //"odd" minute -> water changing, No temperature
   {
@@ -147,79 +155,103 @@ void loop() {
       Serial.println(" Pump OFF");
       pumpOn = false;
     }
-    
   }
 
   //WiFi Connection
   if (client) {
-    boolean currentLineIsBlank = true; //a http request ends with a blank line
+    String currentLine = "";
     while (client.connected()) {
       if (client.available()) {
         char c = client.read();
         Serial.write(c);
-        if (c == '\n' && currentLineIsBlank)
-        { //if reaching the end of line and the line is blank, the http request has ended, you can send a reply
-          client.println("HTTP/1.1 200 OK"); //send a standard http response header
-          client.println("Content-Type: text/html");
-          client.println("Connection: close");  //the connection will be closed after completion of the response
-          client.println("Refresh: 15");  //(?adjust with the delay time) refresh the page automatically every 15s (?)
-          client.println();
-          client.println("<!DOCTYPE HTML>");
-          client.println("<html>");
-
-          // REAL Contents part ! ! !
-          client.println("<head>Kathleen's 2019 Summer <b>IoT</b> Project -- ");
-          client.println("<body>");
-          client.println("<h1>Tortoise Smart Home</h1>");
-
-          //Real-time Clock
-          client.print("<h3><i>Current Time:</i>   ");
-          client.print(now.Day());
-          client.print("/");
-          client.print(now.Month());
-          client.print("/");
-          client.print(now.Year());
-          client.print(" ");
-          client.print(now.Hour());
-          client.print(":");
-          client.print(now.Minute());
-          client.print(":");
-          client.print(now.Second());
-          client.println("</h3>");
-
-          //"Temperature"
-          client.println("<h2><mark><i>Temperature:</i></mark></h2>");
-          client.print("<h3>Current water temperature is ");
-          client.print(temperature);
-          client.println(" C.</h3>");
-
-          //"Water Changing"
-          client.println("<h2><mark><i>Water Changing:</i></mark></h2>");
-          client.print("Current water turbidity voltage is ");
-          client.print(turbidityVol);
-          client.println("V; <br />");
-          client.print("Standard water turbidity voltage is above ");
-          client.print(turbidityStandard);
-          client.println("V.");
-          if (pumpOn) {
-            client.println("<h3>Pump is currently ON!</h3>");
-          }
-          else {
-            client.println("<h3>Pump is currently OFF.</h3>");
-          }
-
-          // END ~ ~ ~
-
-          client.println("</body>");
-          client.println("</html>");
-          break;
-        }
         if (c == '\n') {
-          //you're starting a new line
-          currentLineIsBlank = true;
-        } else if (c != '\r') {
-          //you've gotten a character on the current line
-          currentLineIsBlank = false;
+          if (currentLine.length() == 0) {//if reaching the end of line and the line is blank, the http request has ended, you can send a reply
+            client.println("HTTP/1.1 200 OK"); //send a standard http response header
+            client.println("Content-Type: text/html");
+            client.println("Connection: close");  //the connection will be closed after completion of the response
+            client.println("Refresh: 15");  //(?adjust with the delay time) refresh the page automatically every 15s (?)
+            client.println();
+            client.println("<!DOCTYPE HTML>");
+            client.println("<html>");
+
+            // REAL Contents part ! ! !
+            client.println("<head>Kathleen's 2019 Summer <b>IoT</b> Project -- ");
+            client.println("<body>");
+            client.println("<h1>Tortoise Smart Home</h1>");
+
+            //Real-time Clock
+            client.print("<h3><i>Current Time:</i>   ");
+            client.print(now.Day());
+            client.print("/");
+            client.print(now.Month());
+            client.print("/");
+            client.print(now.Year());
+            client.print(" ");
+            client.print(now.Hour());
+            client.print(":");
+            client.print(now.Minute());
+            client.print(":");
+            client.print(now.Second());
+            client.println("</h3>");
+
+            //"Temperature"
+            client.println("<h2><mark><i>Temperature:</i></mark></h2>");
+            client.print("<h3>Current water temperature is ");
+            client.print(temperature);
+            client.println(" C.</h3>");
+
+            //"Water Changing"
+            client.println("<h2><mark><i>Water Changing:</i></mark></h2>");
+            client.print("Current water turbidity voltage is ");
+            client.print(turbidityVol);
+            client.println("V; <br />");
+            client.print("Standard water turbidity voltage is above ");
+            client.print(turbidityStandard);
+            client.println("V.");
+            if (pumpOn) {
+              client.println("<h3>Pump is currently ON!</h3>");
+            }
+            else {
+              client.println("<h3>Pump is currently OFF.</h3>");
+            }
+
+            //"Lighting"
+            client.println("<h2><mark><i>Lighting:</i></mark></h2>");
+            client.println("Turn <a href=\"/off\">OFF</a> LED lamp immediately<br>");
+            client.print("Turn on <a href=\"/low\">LOW-level</a> light<br>");
+            client.print("Turn on <a href=\"/medium\">MEDIUM-level</a> light<br>");
+            client.print("Turn on <a href=\"/high\">HIGH-level</a> light<br>");
+            client.print("<h3>LED is currently ");
+            client.print(ledCondition);
+            client.println(".</h3>");
+
+            // END ~ ~ ~
+
+            client.println("</body></html>");
+            break;
+          } else { //if you got a newline, then clear currentLine
+            currentLine = "";
+          }
+        } else if (c != '\r') { //if you got anything else but a carriage return character,
+          currentLine += c; // add it to the end of the currentLine
+        }
+
+        //remotely control for "Lighting"
+        if (currentLine.endsWith("GET /off") > 0) {
+          analogWrite(ledPin, noLED);
+          ledCondition = "OFF";
+        }
+        if (currentLine.endsWith("GET /low") > 0) {
+          analogWrite(ledPin, lowLED);
+          ledCondition = "in LOW brightness level";
+        }
+        if (currentLine.endsWith("GET /medium") > 0) {
+          analogWrite(ledPin, mediumLED);
+          ledCondition = "in MEDIUM brightness level";
+        }
+        if (currentLine.endsWith("GET /high") > 0) {
+          analogWrite(ledPin, highLED);
+          ledCondition = "in HIGH brightness level";
         }
       }
     }
