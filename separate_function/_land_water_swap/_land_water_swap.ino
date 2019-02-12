@@ -35,7 +35,7 @@ void loop() {
   Serial.print(" Pressure Value:");
   Serial.println(pressureValue);
   
-  if(brightnessValue >= 500 && !boardUp && pressureValue < 1) //board UP with NO pressure {brightness value 500 just for TEST}
+  if(brightnessValue >= 180 && !boardUp && pressureValue < 1) //board UP with NO pressure {brightness value 500 just for TEST}
   {
     digitalWrite(upRelayPin, HIGH); //turn on the pull-up relay
     Serial.print(" board up ");
@@ -44,7 +44,7 @@ void loop() {
     boardUp = true;
     Serial.println("board stop up");
   }
-  else if(brightnessValue < 500 && boardUp) //board DOWN
+  else if(brightnessValue < 180 && boardUp) //board DOWN
   {
     digitalWrite(downRelayPin, HIGH); //turn on the drop-down relay
     Serial.print(" board down ");

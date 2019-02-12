@@ -63,7 +63,7 @@ const int downRelayPin = 4; //"drop-down relay"
 boolean boardUp = false; //board condition: "true" for board up, "false" for board down
 int brightnessValue = 0;
 int pressureValue = 0;
-const int brightStandard = 200;  //(?)
+const int brightStandard = 180;
 
 //"Water Changing"
 const int turbidityPin = A4;
