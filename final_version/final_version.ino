@@ -1,5 +1,5 @@
 /****************
-   (Feb12) Add ALL 5 functions:
+   (Feb14) Add ALL 5 functions:
            Temperature, Water Changing, Lighting, Feeding, Land-water Swap.
 
    Use: Water-proof temperature sensor / Turbidity sensor, Pump (with MOS module),
@@ -20,7 +20,7 @@
    REMOTELY control:
    Light: Remotely button controlled through website.
    (Have 3 basic led brightness level: "low", "medium", "high".)
-   Feed: Feed at pre-set fixed time point.
+   Feed: Feed at 2 fixed time points (the time can be remotely set).
 
    Line CONNECTION:
    (OLED: VCC->3.3V;) Turbidity Sensor:Black->GND,Red->5V,Blue->AnalogIn;
@@ -80,9 +80,9 @@ RtcDS1302<ThreeWire> Rtc(myWire);
 //"Feeding"
 Servo myservo;
 const float turbidFeeding = 1.0; //(?) "standard" not too turbid to feed
-const int feedHr1 = 11; //the pre-set feeding hour (0-23)
-const int feedHr2 = 20;
-const int feedMin = 0; //(0-59)
+int feedHr1 = 10; //(default) the remotely set feeding hour (8-20)
+int feedHr2 = 18;
+int feedMin = 0; //(default)(0,10,...50)
 boolean isFeeding = false; ///use for website condition shown
 
 //"Lighting"
@@ -189,7 +189,7 @@ void loop() {
     isFeeding = false;
   }
 
-  if (now.Minute() % 2 == 0) //"even" minute -> temperature, NO water changing
+  if (now.Minute() % 2 == 0) //"even" minute -> temperature & land-water swap, NO water changing
   {
     digitalWrite(pumpPin, LOW); //turn OFF pump
     pumpOn = false;
@@ -227,7 +227,7 @@ void loop() {
       }
     }
   }
-  else //"odd" minute -> water changing, No temperature
+  else //"odd" minute -> water changing, NO temperature & NO land-water swap
   {
     //"Water Changing" function
     int turbidityValue = analogRead(turbidityPin);
@@ -254,7 +254,7 @@ void loop() {
             client.println("HTTP/1.1 200 OK"); //send a standard http response header
             client.println("Content-Type: text/html");
             client.println("Connection: close");  //the connection will be closed after completion of the response
-            client.println("Refresh: 15");  //(?adjust with the delay time) refresh the page automatically every 15s (?)
+            client.println("Refresh: 30");  //(?adjust with the delay time) refresh the page automatically every 30s (?)
             client.println();
             client.println("<!DOCTYPE HTML>");
             client.println("<html>");
@@ -329,11 +329,30 @@ void loop() {
 
             //"Feeding"
             client.println("<h2><mark><i>Feeding:</i></mark></h2>");
-            client.print("Pre-set feeding time is <b>");
+            client.println("<i><b>Reset Feeding Time:</b></i> <i>(choosing below)</i><br>");
+            client.print("<i>Hour1:</i> <a href=\"/8\">8</a> <a href=\"/9\">9</a> <a href=\"/h10\">10</a> <a href=\"/11\">11</a> <a href=\"/12\">12</a> <a href=\"/13\">13</a> <a href=\"/14\">14</a><br>");
+            client.print("<i>Hour2:</i> <a href=\"/15\">15</a> <a href=\"/16\">16</a> <a href=\"/17\">17</a> <a href=\"/18\">18</a> <a href=\"/19\">19</a> <a href=\"/h20\">20</a><br>");
+            client.print("<i>Minute:</i> <a href=\"/m0\">00</a> <a href=\"/m10\">10</a> <a href=\"/m20\">20</a> <a href=\"/30\">30</a> <a href=\"/40\">40</a> <a href=\"/50\">50</a><br>");          
+            client.print("<h3>Feeding time is ");
             client.print(feedHr1);
-            client.print("</b> & <b>");
+            client.print(":");
+            if (feedMin == 0) { //"time format"
+              client.print("00");
+            }
+            else {
+              client.print(feedMin);
+            }
+            client.print(" & ");
             client.print(feedHr2);
-            client.println("</b> o'clock.");
+            client.print(":");
+            if (feedMin == 0) {
+              client.print("00");
+            }
+            else {
+              client.print(feedMin);
+            }
+            client.println(".</h3>");
+            
             client.print("<h3>Feeding device is currently ");
             if (isFeeding) {
               client.println("ON!</h3>");
@@ -363,6 +382,65 @@ void loop() {
           currentLine += c; // add it to the end of the currentLine
         }
 
+        //remotely set "Feeding" time
+        if(currentLine.endsWith("GET /8") > 0) {
+          feedHr1 = 8;
+        }
+        if(currentLine.endsWith("GET /9") > 0) {
+          feedHr1 = 9;
+        }
+        if(currentLine.endsWith("GET /h10") > 0) {
+          feedHr1 = 10;
+        }
+        if(currentLine.endsWith("GET /11") > 0) {
+          feedHr1 = 11;
+        }
+        if(currentLine.endsWith("GET /12") > 0) {
+          feedHr1 = 12;
+        }
+        if(currentLine.endsWith("GET /13") > 0) {
+          feedHr1 = 13;
+        }
+        if(currentLine.endsWith("GET /14") > 0) {
+          feedHr1 = 14;
+        }
+        if(currentLine.endsWith("GET /15") > 0) {
+          feedHr2 = 15;
+        }
+        if(currentLine.endsWith("GET /16") > 0) {
+          feedHr2 = 16;
+        }
+        if(currentLine.endsWith("GET /17") > 0) {
+          feedHr2 = 17;
+        }
+        if(currentLine.endsWith("GET /18") > 0) {
+          feedHr2 = 18;
+        }
+        if(currentLine.endsWith("GET /19") > 0) {
+          feedHr2 = 19;
+        }
+        if(currentLine.endsWith("GET /h20") > 0) {
+          feedHr2 = 20;
+        }
+        if(currentLine.endsWith("GET /m0") > 0) {
+          feedMin = 0;
+        }
+        if(currentLine.endsWith("GET /m10") > 0) {
+          feedMin = 10;
+        }
+        if(currentLine.endsWith("GET /m20") > 0) {
+          feedMin = 20;
+        }
+        if(currentLine.endsWith("GET /30") > 0) {
+          feedMin = 30;
+        }
+        if(currentLine.endsWith("GET /40") > 0) {
+          feedMin = 40;
+        }
+        if(currentLine.endsWith("GET /50") > 0) {
+          feedMin = 50;
+        }
+
         //remotely control for "Lighting"
         if (currentLine.endsWith("GET /off") > 0) {
           analogWrite(ledPin, noLED);
@@ -385,7 +463,7 @@ void loop() {
     delay(1); //give the web browser time to receive data
     client.stop(); //close the connection:
   }
-  delay(5000); //(?)
+  delay(10000); //(?)
 }
 
 
