@@ -318,7 +318,7 @@ void loop() {
 
             //"Feeding"
             client.println("<h2><mark><i>Feeding:</i></mark></h2>");
-            
+
             client.print("<i><b>Reset Feeding Time:</b></i> <i>(choosing below)</i><br>");
             client.print("<i>Hour1:</i> <a href=\"/8\">8</a> <a href=\"/9\">9</a> <a href=\"/h10\">10</a> <a href=\"/11\">11</a> <a href=\"/12\">12</a> <a href=\"/13\">13</a> <a href=\"/14\">14</a><br>");
             client.print("<i>Hour2:</i> <a href=\"/15\">15</a> <a href=\"/16\">16</a> <a href=\"/17\">17</a> <a href=\"/18\">18</a> <a href=\"/19\">19</a> <a href=\"/h20\">20</a> <a href=\"/21\">21</a><br>");
