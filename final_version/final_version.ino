@@ -1,35 +1,27 @@
-/****************
-   (Feb14) Add ALL 5 functions:
-           Temperature, Water Changing, Lighting, Feeding, Land-water Swap.
+/**********************
+   (Feb14) Add ALL 5 functions for "Tortoise Smart Home" artefact:
+        Temperature, Water Changing, Lighting, Feeding, Land-water Swap.
 
-   Use: Water-proof temperature sensor / Turbidity sensor, Pump (with MOS module),
-        Real-time clock module / LED lamp / Micro servo /
-        Photoresistor (light sensor), Relay modules (*2), Pressure sensor.
+   Use: Water-proof temperature sensor / Turbidity sensor, Pump (with MOS module), Real-time clock module /
+        LED lamp / Micro servo / Photoresistor (light sensor), Relay modules (*2), Pressure sensor.
 
    Brief Explanation:
-   We will use real time to seperate various functions~
+    (We will use real time to seperate various functions~)
    EVEN Minute:
-     Temp: We will get data from water temperature sensor, show it on OLED screen,
-   and send real-time message to the website, to let owner take further actions themselves.
+     Temp: We will get data from water temperature sensor and send real-time message to the website, to let owner take further actions themselves.
      Swap: If (NOT bright && condition "board down") && NO pressure, open "pull-up relay" for a while;
-   if bright && condition "board up", open "drop-down relay" for a while.
-   (Smaller brightness value, brighter.)
+           if bright && condition "board up", open "drop-down relay" for a while. (Smaller brightness value, brighter.)
    ODD Minute:
-     Water Change: If more turbid than "normal level", turn ON the pump.
-   (More turbid, output VALUE is smaller.)
+     Water Change: If more turbid than "normal level", turn ON the pump. (More turbid, output VALUE is smaller.)
    REMOTELY control:
-   Light: Remotely button controlled through website.
-   (Have 3 basic led brightness level: "low", "medium", "high".)
-   Feed: Feed at 2 fixed time points (the time can be remotely set).
+     Light: Remotely button controlled through website. (Have 3 basic led brightness levels: "low", "medium", "high".)
+     Feed: Feed at 2 fixed time points, (the time can be remotely set).
 
    Line CONNECTION:
-   (OLED: VCC->3.3V;) Turbidity Sensor:Black->GND,Red->5V,Blue->AnalogIn;
-   Pump with MOS module:{smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND;
-   Real-time clock: myWire(I/O, ~CLK, RST);
-   LED: DIM->brightness level "PWM~" control or HIGH/LOW digital control;
-   Micro servo: Gery->GND,Red->VCC(+5V),Orange->Digital;
-   Pressure sensor: AD0->Analog In.
- ****************/
+     Turbidity Sensor:Black->GND,Red->5V,Blue->AnalogIn; Pump with MOS module:{smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND;
+     Real-time clock: myWire(I/O, ~CLK, RST); LED: DIM->brightness level "PWM~" control or HIGH/LOW digital control;
+     Micro servo: Gery->GND,Red->VCC(+5V),Orange->Digital; Pressure sensor: AD0->Analog In.
+ ***********************/
 
 //WiFi Connection
 #include <SPI.h>
@@ -38,7 +30,7 @@
 //Real-time Clock
 #include <ThreeWire.h>
 #include <RtcDS1302.h>
-//"Feeding"
+//Feeding Device
 #include <Servo.h>
 
 unsigned char temp_reset();
@@ -46,9 +38,8 @@ void temp_write(char WRT);
 unsigned char temp_read();
 
 //WiFi Connection
-char ssid[] = SECRET_SSID; // CHANGE actual ssid & password in "wifi_secret.h"
+char ssid[] = SECRET_SSID; //CHANGE actual ssid & password in "wifi_secret.h"
 char pass[] = SECRET_PASS;
-int keyIndex = 0; //your network key Index number (needed only for WEP)
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
@@ -69,29 +60,30 @@ const int brightStandard = 180;
 //"Water Changing"
 const int turbidityPin = A4;
 const int pumpPin = 11;
-const float turbidWaterChanging = 1.5; //(?3 for test) "standard"
+const float turbidWaterChanging = 1.5; //('3' for test) "standard"
 float turbidityVol = 0.0;
-boolean pumpOn = false; //use for website condition shown
+boolean pumpOn = false; //using for website condition shown
 
 //Real-time Clock
-ThreeWire myWire(7, 6, 8); // Connection: myWire(I/O, CLK, RST)
+ThreeWire myWire(7, 6, 8); //Connection: myWire(I/O, CLK, RST)
 RtcDS1302<ThreeWire> Rtc(myWire);
 
 //"Feeding"
 Servo myservo;
-const float turbidFeeding = 1.0; //(?) "standard" not too turbid to feed
-int feedHr1 = 10; //(default) the remotely set feeding hour (8-20)
+const float turbidFeeding = 1.0; // "standard", not too turbid to feed
+int feedHr1 = 10; //(default) the pre-set feeding hour (8-20)
 int feedHr2 = 18;
-int feedMin = 0; //(default)(0,10,...50)
-boolean isFeeding = false; ///use for website condition shown
+int feedMin = 0; //(default) (0,10,...50)
+boolean isFeeding = false; ///using for website condition shown
 
 //"Lighting"
 const int ledPin = 5; //LED attaches to PWM(Pulse Width Modulation) ~5
-const int noLED = 0; //Higher "ledLevel" value, Brighter~
+const int noLED = 0; //Higher "ledLevel" value, Brighter!
 const int lowLED = 1;
 const int mediumLED = 2;
-const int highLED = 4; //(real test) reasonable brightness levels in RANGE 0-255
+const int highLED = 4; //(with real TEST) reasonable brightness levels in RANGE 0-255
 String ledCondition = "OFF";
+
 
 void setup() {
   pinMode(pumpPin, OUTPUT);
@@ -100,7 +92,7 @@ void setup() {
   pinMode(downRelayPin, OUTPUT);
   pinMode(pressurePin, OUTPUT);
 
-  Serial.begin(9600); //initialize serial and wait for port to open:
+  Serial.begin(9600); //initialize serial and wait for port to open
 
   //Real-time Clock
   Rtc.Begin();
@@ -124,8 +116,7 @@ void setup() {
   while (!Serial) {
     ; //wait for serial port to connect (needed for native USB port only)
   }
-  //check for the WiFi module:
-  if (WiFi.status() == WL_NO_MODULE) {
+  if (WiFi.status() == WL_NO_MODULE) { //check for the WiFi module
     Serial.println("Communication with WiFi module failed!");
     while (true); //don't continue
   }
@@ -133,8 +124,7 @@ void setup() {
   if (fv < "1.0.0") {
     Serial.println("Please upgrade the firmware");
   }
-  //attempt to connect to Wifi network:
-  while (status != WL_CONNECTED) {
+  while (status != WL_CONNECTED) { //attempt to connect to Wifi network
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
     status = WiFi.begin(ssid, pass); //(if connect to WPA/WPA2 network, change this line~)
@@ -154,7 +144,6 @@ void loop() {
   //"Feeding" function
   if (turbidityVol > turbidFeeding) { //NOT very turbid (with large turbidity voltage)-> judge turbidity first
     if (now.Minute() == feedMin && now.Second() < 30 && (now.Hour() == feedHr1 || now.Hour() == feedHr2)) //judge time then
-      //plan to judge feeding at 11:00:00 - 11:00:30 and 20:00:00 - 20:00:30 everyday!
     {
       isFeeding = true;
       myservo.write(15);
@@ -189,7 +178,7 @@ void loop() {
     isFeeding = false;
   }
 
-  if (now.Minute() % 2 == 0) //"even" minute -> temperature & land-water swap, NO water changing
+  if (now.Minute() % 2 == 0) //"EVEN" minute -> temperature & land-water swap, NO water changing
   {
     digitalWrite(pumpPin, LOW); //turn OFF pump
     pumpOn = false;
@@ -206,32 +195,32 @@ void loop() {
       unsigned short tempH = temp_read();
       unsigned int temp = ((unsigned int)tempH << 8) + (unsigned int)tempL;
       temp = (float)temp * 6.25;
-      temperature = (float)temp / 100; //Get the REAL "temperature" value~
+      temperature = (float)temp / 100; //get the REAL "temperature" value
 
-      //"Land-water Swap"
+      //"Land-water Swap" function
       brightnessValue = analogRead(brightnessPin);
       pressureValue = analogRead(pressurePin);
       if (brightnessValue >= brightStandard && !boardUp && pressureValue < 1)
       { //board UP with NO pressure
-        digitalWrite(upRelayPin, HIGH); //turn on the pull-up relay
-        delay(3000); //Time for pulley system works
+        digitalWrite(upRelayPin, HIGH); //turn on the "pull-up relay"
+        delay(3000); //time for pulley system works
         digitalWrite(upRelayPin, LOW);
         boardUp = true;
       }
-      else if (brightnessValue < brightStandard && boardUp) //board DOWN as brighter
+      else if (brightnessValue < brightStandard && boardUp) //board DOWN as bright enough
       { //Smaller brightness value, Brighter!
-        digitalWrite(downRelayPin, HIGH); //turn on the drop-down relay
+        digitalWrite(downRelayPin, HIGH); //turn on the "drop-down relay"
         delay(3000); //(same, with physical TEST)
         digitalWrite(downRelayPin, LOW);
         boardUp = false;
       }
     }
   }
-  else //"odd" minute -> water changing, NO temperature & NO land-water swap
+  else //"ODD" minute -> water changing, NO temperature & NO land-water swap
   {
     //"Water Changing" function
     int turbidityValue = analogRead(turbidityPin);
-    turbidityVol = turbidityValue * (5.0 / 1024.0); //convert the "read turbidity value" (0-1023) to voltage (0-5V)
+    turbidityVol = turbidityValue * (5.0 / 1024.0); //convert the "read turbidity value" (0-1023) to voltage
     if (turbidityVol < turbidWaterChanging) {
       digitalWrite(pumpPin, HIGH); //turn ON pump
       pumpOn = true;
@@ -250,11 +239,11 @@ void loop() {
         char c = client.read();
         Serial.write(c);
         if (c == '\n') {
-          if (currentLine.length() == 0) {//if reaching the end of line and the line is blank, the http request has ended, you can send a reply
+          if (currentLine.length() == 0) { //if reaching the end of line and the line is blank, the http request has ended, you can send a reply
             client.println("HTTP/1.1 200 OK"); //send a standard http response header
             client.println("Content-Type: text/html");
-            client.println("Connection: close");  //the connection will be closed after completion of the response
-            client.println("Refresh: 30");  //(?adjust with the delay time) refresh the page automatically every 30s (?)
+            client.println("Connection: close"); //the connection will be closed after completion of the response
+            client.println("Refresh: 30"); //refresh the page automatically every 30s
             client.println();
             client.println("<!DOCTYPE HTML>");
             client.println("<html>");
@@ -329,11 +318,12 @@ void loop() {
 
             //"Feeding"
             client.println("<h2><mark><i>Feeding:</i></mark></h2>");
-            client.println("<i><b>Reset Feeding Time:</b></i> <i>(choosing below)</i><br>");
+            
+            client.print("<i><b>Reset Feeding Time:</b></i> <i>(choosing below)</i><br>");
             client.print("<i>Hour1:</i> <a href=\"/8\">8</a> <a href=\"/9\">9</a> <a href=\"/h10\">10</a> <a href=\"/11\">11</a> <a href=\"/12\">12</a> <a href=\"/13\">13</a> <a href=\"/14\">14</a><br>");
-            client.print("<i>Hour2:</i> <a href=\"/15\">15</a> <a href=\"/16\">16</a> <a href=\"/17\">17</a> <a href=\"/18\">18</a> <a href=\"/19\">19</a> <a href=\"/h20\">20</a><br>");
-            client.print("<i>Minute:</i> <a href=\"/m0\">00</a> <a href=\"/m10\">10</a> <a href=\"/m20\">20</a> <a href=\"/30\">30</a> <a href=\"/40\">40</a> <a href=\"/50\">50</a><br>");          
-            client.print("<h3>Feeding time is ");
+            client.print("<i>Hour2:</i> <a href=\"/15\">15</a> <a href=\"/16\">16</a> <a href=\"/17\">17</a> <a href=\"/18\">18</a> <a href=\"/19\">19</a> <a href=\"/h20\">20</a> <a href=\"/21\">21</a><br>");
+            client.print("<i>Minute:</i> <a href=\"/m0\">00</a> <a href=\"/m10\">10</a> <a href=\"/m20\">20</a> <a href=\"/30\">30</a> <a href=\"/40\">40</a> <a href=\"/50\">50</a><br>");
+            client.print("<h3>Feeding Time is ");
             client.print(feedHr1);
             client.print(":");
             if (feedMin == 0) { //"time format"
@@ -352,7 +342,7 @@ void loop() {
               client.print(feedMin);
             }
             client.println(".</h3>");
-            
+
             client.print("<h3>Feeding device is currently ");
             if (isFeeding) {
               client.println("ON!</h3>");
@@ -363,7 +353,7 @@ void loop() {
 
             //"Lighting" function
             client.println("<h2><mark><i>Lighting:</i></mark></h2>");
-            client.println("Turn <a href=\"/off\">OFF</a> LED lamp immediately<br>");
+            client.print("Turn <a href=\"/off\">OFF</a> LED lamp immediately<br>");
             client.print("Turn on <a href=\"/low\">LOW-level</a> light<br>");
             client.print("Turn on <a href=\"/medium\">MEDIUM-level</a> light<br>");
             client.print("Turn on <a href=\"/high\">HIGH-level</a> light<br>");
@@ -383,61 +373,64 @@ void loop() {
         }
 
         //remotely set "Feeding" time
-        if(currentLine.endsWith("GET /8") > 0) {
+        if (currentLine.endsWith("GET /8") > 0) {
           feedHr1 = 8;
         }
-        if(currentLine.endsWith("GET /9") > 0) {
+        if (currentLine.endsWith("GET /9") > 0) {
           feedHr1 = 9;
         }
-        if(currentLine.endsWith("GET /h10") > 0) {
+        if (currentLine.endsWith("GET /h10") > 0) {
           feedHr1 = 10;
         }
-        if(currentLine.endsWith("GET /11") > 0) {
+        if (currentLine.endsWith("GET /11") > 0) {
           feedHr1 = 11;
         }
-        if(currentLine.endsWith("GET /12") > 0) {
+        if (currentLine.endsWith("GET /12") > 0) {
           feedHr1 = 12;
         }
-        if(currentLine.endsWith("GET /13") > 0) {
+        if (currentLine.endsWith("GET /13") > 0) {
           feedHr1 = 13;
         }
-        if(currentLine.endsWith("GET /14") > 0) {
+        if (currentLine.endsWith("GET /14") > 0) {
           feedHr1 = 14;
         }
-        if(currentLine.endsWith("GET /15") > 0) {
+        if (currentLine.endsWith("GET /15") > 0) {
           feedHr2 = 15;
         }
-        if(currentLine.endsWith("GET /16") > 0) {
+        if (currentLine.endsWith("GET /16") > 0) {
           feedHr2 = 16;
         }
-        if(currentLine.endsWith("GET /17") > 0) {
+        if (currentLine.endsWith("GET /17") > 0) {
           feedHr2 = 17;
         }
-        if(currentLine.endsWith("GET /18") > 0) {
+        if (currentLine.endsWith("GET /18") > 0) {
           feedHr2 = 18;
         }
-        if(currentLine.endsWith("GET /19") > 0) {
+        if (currentLine.endsWith("GET /19") > 0) {
           feedHr2 = 19;
         }
-        if(currentLine.endsWith("GET /h20") > 0) {
+        if (currentLine.endsWith("GET /h20") > 0) {
           feedHr2 = 20;
         }
-        if(currentLine.endsWith("GET /m0") > 0) {
+        if (currentLine.endsWith("GET /21") > 0) {
+          feedHr2 = 21;
+        }
+        if (currentLine.endsWith("GET /m0") > 0) {
           feedMin = 0;
         }
-        if(currentLine.endsWith("GET /m10") > 0) {
+        if (currentLine.endsWith("GET /m10") > 0) {
           feedMin = 10;
         }
-        if(currentLine.endsWith("GET /m20") > 0) {
+        if (currentLine.endsWith("GET /m20") > 0) {
           feedMin = 20;
         }
-        if(currentLine.endsWith("GET /30") > 0) {
+        if (currentLine.endsWith("GET /30") > 0) {
           feedMin = 30;
         }
-        if(currentLine.endsWith("GET /40") > 0) {
+        if (currentLine.endsWith("GET /40") > 0) {
           feedMin = 40;
         }
-        if(currentLine.endsWith("GET /50") > 0) {
+        if (currentLine.endsWith("GET /50") > 0) {
           feedMin = 50;
         }
 
@@ -458,29 +451,28 @@ void loop() {
           analogWrite(ledPin, highLED);
           ledCondition = "in HIGH brightness level";
         }
+
       }
     }
     delay(1); //give the web browser time to receive data
     client.stop(); //close the connection:
   }
-  delay(10000); //(?)
+  delay(10000);
 }
 
 
-// All Helper Functions ~~~
+// All Helper Functions ~~
 //for WiFi connection
 void printWifiStatus() {
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID()); //print the SSID of the network you're attached to
-
   IPAddress ip = WiFi.localIP(); //print your board's IP address
   Serial.print("IP Address: ");
   Serial.println(ip);
 }
 
 //for water temperature sensor
-unsigned char temp_reset()
-{
+unsigned char temp_reset() {
   pinMode(tempPin, OUTPUT);
   digitalWrite(tempPin, LOW);
   delayMicroseconds(480);
@@ -496,13 +488,12 @@ unsigned char temp_reset()
   }
 }
 
-void temp_write(char WRT)
-{
+void temp_write(char WRT) {
   char i = 0, Cmd = 0;
   Cmd = WRT;
   pinMode(tempPin, INPUT);
   for (i = 0; i < 8; i++) {
-    if ((Cmd & (1 << i)) != 0) //Bitshift Left : variable<<number_of_bits
+    if ((Cmd & (1 << i)) != 0) //bitshift left : variable<<number_of_bits
     {
       pinMode(tempPin, OUTPUT);
       digitalWrite(tempPin, LOW);
@@ -519,8 +510,7 @@ void temp_write(char WRT)
   }
 }
 
-unsigned char temp_read()
-{
+unsigned char temp_read() {
   char i = 0, result = 0;
   pinMode(tempPin, INPUT);
   for (i = 0; i < 8; i++) {
