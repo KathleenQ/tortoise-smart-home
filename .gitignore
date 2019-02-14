@@ -1,2 +1,1 @@
-# Ignore folder named `.idea`
-.idea/
+.idea/*
