@@ -46,7 +46,7 @@ WiFiServer server(80);
 //"Temperature"
 const int tempPin = 12;
 float temperature = 0.0; //real-time temperature
-float Temperature = 0.0; //shown temperature on html
+float Temperature = 0.0; //final shown temperature on html
 
 //"Land-water Swap"
 const int brightnessPin = A0;
