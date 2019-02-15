@@ -1,5 +1,5 @@
 /**********************
-   (Feb14) Add ALL 5 functions for "Tortoise Smart Home" artefact:
+   (Feb15) Add ALL 5 functions for "Tortoise Smart Home" artefact:
         Temperature, Water Changing, Lighting, Feeding, Land-water Swap.
 
    Use: Water-proof temperature sensor / Turbidity sensor, Pump (with MOS module), Real-time clock module /
@@ -45,22 +45,23 @@ WiFiServer server(80);
 
 //"Temperature"
 const int tempPin = 12;
-float temperature = 0.0;
+float temperature = 0.0; //real-time temperature
+float Temperature = 0.0; //shown temperature on html
 
 //"Land-water Swap"
 const int brightnessPin = A0;
 const int pressurePin = A2;
-const int upRelayPin = 2; //"pull-up relay"
-const int downRelayPin = 4; //"drop-down relay"
+const int downRelayPin = 2; //"drop-down relay"
+const int upRelayPin = 4; //"pull-up relay"
 boolean boardUp = false; //board condition: "true" for board up, "false" for board down
 int brightnessValue = 0;
 int pressureValue = 0;
-const int brightStandard = 180;
+const int brightStandard = 200;
 
 //"Water Changing"
 const int turbidityPin = A4;
 const int pumpPin = 11;
-const float turbidWaterChanging = 1.5; //('3' for test) "standard"
+const float turbidWaterChanging = 1.5; //"standard"
 float turbidityVol = 0.0;
 boolean pumpOn = false; //using for website condition shown
 
@@ -143,7 +144,7 @@ void loop() {
 
   //"Feeding" function
   if (turbidityVol > turbidFeeding) { //NOT very turbid (with large turbidity voltage)-> judge turbidity first
-    if (now.Minute() == feedMin && now.Second() < 30 && (now.Hour() == feedHr1 || now.Hour() == feedHr2)) //judge time then
+    if (now.Minute() == feedMin && (now.Hour() == feedHr1 || now.Hour() == feedHr2)) //judge time then
     {
       isFeeding = true;
       myservo.write(15);
@@ -196,6 +197,9 @@ void loop() {
       unsigned int temp = ((unsigned int)tempH << 8) + (unsigned int)tempL;
       temp = (float)temp * 6.25;
       temperature = (float)temp / 100; //get the REAL "temperature" value
+      if (temperature != 0) {
+        Temperature = temperature;
+      }
 
       //"Land-water Swap" function
       brightnessValue = analogRead(brightnessPin);
@@ -243,7 +247,7 @@ void loop() {
             client.println("HTTP/1.1 200 OK"); //send a standard http response header
             client.println("Content-Type: text/html");
             client.println("Connection: close"); //the connection will be closed after completion of the response
-            client.println("Refresh: 30"); //refresh the page automatically every 30s
+            client.println("Refresh: 15"); //refresh the page automatically every 15s
             client.println();
             client.println("<!DOCTYPE HTML>");
             client.println("<html>");
@@ -457,7 +461,7 @@ void loop() {
     delay(1); //give the web browser time to receive data
     client.stop(); //close the connection:
   }
-  delay(10000);
+  delay(5000);
 }
 
 
