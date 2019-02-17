@@ -15,7 +15,7 @@
      Water Change: If more turbid than "normal level", turn ON the pump. (More turbid, output VALUE is smaller.)
    REMOTELY control:
      Light: Remotely button controlled through website. (Have 3 basic led brightness levels: "low", "medium", "high".)
-     Feed: Feed at 2 fixed time points, (the time can be remotely set).
+     Feed: Feed at 2 remotely-set time points.
 
    Line CONNECTION:
      Turbidity Sensor:Black->GND,Red->5V,Blue->AnalogIn; Pump with MOS module:{smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND;
