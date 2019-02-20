@@ -1,6 +1,6 @@
 # Separate Functions Without "Internet" Connection
 
-This folder shows how various main sensors and actuators work individually and what separate functions look like without Wi-Fi connection.
+This folder is special for *Things* side. It shows how various main sensors and actuators work individually and what separate functions look like without Wi-Fi connection.
 
 It's designed to help people test separate parts first, and thus ensure all components can work well individually.
 
