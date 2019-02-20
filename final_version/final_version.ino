@@ -1,5 +1,5 @@
 /**********************
-   (Feb15) Add ALL 5 functions for "Tortoise Smart Home" artefact:
+   (Feb20) Add ALL 5 functions for "Tortoise Smart Home" artefact:
         Temperature, Water Changing, Lighting, Feeding, Land-water Swap.
 
    Use: Water-proof temperature sensor / Turbidity sensor, Pump (with MOS module), Real-time clock module /
@@ -15,7 +15,7 @@
      Water Change: If more turbid than "normal level", turn ON the pump. (More turbid, output VALUE is smaller.)
    REMOTELY control:
      Light: Remotely button controlled through website. (Have 3 basic led brightness levels: "low", "medium", "high".)
-     Feed: Feed at 2 remotely-set time points.
+     Feed: Feed at 2 remotely-set time points if the water is not too turbid.
 
    Line CONNECTION:
      Turbidity Sensor:Black->GND,Red->5V,Blue->AnalogIn; Pump with MOS module:{smaller}'+'->I/O,{larger}'+'->5V,{both}'-'->GND;
@@ -61,7 +61,7 @@ const int brightStandard = 200;
 //"Water Changing"
 const int turbidityPin = A4;
 const int pumpPin = 11;
-const float turbidWaterChanging = 1.5; //"standard"
+const float turbidWaterChanging = 1.1; //"standard"
 float turbidityVol = 0.0;
 boolean pumpOn = false; //using for website condition shown
 
@@ -71,7 +71,7 @@ RtcDS1302<ThreeWire> Rtc(myWire);
 
 //"Feeding"
 Servo myservo;
-const float turbidFeeding = 1.0; // "standard", not too turbid to feed
+const float turbidFeeding = 0.6; // "standard", not too turbid to feed
 int feedHr1 = 10; //(default) the pre-set feeding hour (8-20)
 int feedHr2 = 18;
 int feedMin = 0; //(default) (0,10,...50)
@@ -347,6 +347,9 @@ void loop() {
             }
             client.println(".</h3>");
 
+            client.print("Feeding turbidity voltage is above ");
+            client.print(turbidFeeding);
+            client.println("V. <i>(The water is not too turbid to feed.)</i>");
             client.print("<h3>Feeding device is currently ");
             if (isFeeding) {
               client.println("ON!</h3>");
