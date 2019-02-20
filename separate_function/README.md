@@ -8,52 +8,47 @@ The brief separate functions' descriptions and required tools are shown below:
 
 (***Detailed Explanations***, ***Line Connection*** & ***References*** are shown as the beginning annotation of each file!)
 
-## Feeding
-FILE "_feeding"
+## [Feeding](https://github.com/KathleenQ/tortoise-smart-home/tree/master/separate_function/_feeding)
 
-**Use**: 1 DS1302 real-time clock module, 1 micro servo, 1 turbidity sensor & 1 self-made plastic food container with a hole, 1 self-made plastic rotating board.
+***Use***: 1 DS1302 real-time clock module, 1 micro servo, 1 turbidity sensor & 1 self-made plastic food container with a hole, 1 self-made plastic rotating board.
 
-**Codes Union**: "turbiditySensor", "microServo", "realTime_clock" ("_OLD" for Arduino Uno R3 board, "_RtcDS1302" for Arduino Uno WIFI R2).
+***Codes Union***: "turbiditySensor", "microServo", "realTime_clock" ("_OLD" for Arduino Uno R3 board, "_RtcDS1302" for Arduino Uno WIFI R2).
 
-**Description**: Feed at pre-set fixed time point, if the water is not too turbid, the food will be released, depending on whether the hole of the food container will be hid with the help of micro servo (connected with other hand-made physical device).
+***Description***: Feed at pre-set fixed time point, if the water is not too turbid, the food will be released, depending on whether the hole of the food container will be hid with the help of micro servo (connected with other hand-made physical device).
 
-![Initial Feeding Idea]()
+![Initial Feeding Idea](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/initial-feeding-idea.jpg)
 
-## Land-water Swap
-FILE "_land_water_swap"
+## [Land-water Swap](https://github.com/KathleenQ/tortoise-smart-home/tree/master/separate_function/_land_water_swap)
 
-**Use**: 1 photoresistor (light sensor), 2 relay modules, 1 pressure sensor & 1 pulley system, 2 plastic boards (a rotatable ladder board and a fixed above-water flat board).
+***Use***: 1 photoresistor (light sensor), 2 relay modules, 1 pressure sensor & 1 pulley system, 2 plastic boards (a rotatable ladder board and a fixed above-water flat board).
 
-**Codes Union**: "land_water_swap_without_pressure", "pressureSensor".
+***Codes Union***: "land_water_swap_without_pressure", "pressureSensor".
 
-**Description**: If (NOT bright && condition "board down") && NO pressure (i.e. no tortoises currently on the flat board), open "pull-up relay" for a while. If bright && condition "board up", open "drop-down relay" for a while.
+***Description***: If (NOT bright && condition "board down") && NO pressure (i.e. no tortoises currently on the flat board), open "pull-up relay" for a while. If bright && condition "board up", open "drop-down relay" for a while.
 
-![Land-water Swap Idea]()
+![Land-water Swap Idea](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/land-water-swap-idea.jpg)
 
-## Lighting
-FILE "_lighting"
+## [Lighting](https://github.com/KathleenQ/tortoise-smart-home/tree/master/separate_function/_lighting)
 
-**Use**: 1 5730LED lamp.
+***Use***: 1 5730LED lamp.
 
-**Description**: Remotely control the lamp and its 3 brightness levels by website command.
+***Description***: Remotely control the lamp and its 3 brightness levels by website command.
 
-## Temperature
-FILE "_temperature"
+## [Temperature](https://github.com/KathleenQ/tortoise-smart-home/tree/master/separate_function/_temperature)
 
-**Use**: 1 water-proof temperature sensor, (1 OLED -> not used for final demo version).
+***Use***: 1 water-proof temperature sensor, (1 OLED -> not used for final demo version).
 
-**Codes Union**: "temperature_sensor".
+***Codes Union***: "temperature_sensor".
 
-**Description**: Get water temperature data (and show it on the OLED screen), and send real-time message to website, to let owner take further actions by themselves (e.g. open heater remotely using "smart socket").
+***Description***: Get water temperature data (and show it on the OLED screen), and send real-time message to website, to let owner take further actions by themselves (e.g. open heater remotely using "smart socket").
 
-## Water Changing
-FILE "_water_changing"
+## [Water Changing](https://github.com/KathleenQ/tortoise-smart-home/tree/master/separate_function/_water_changing)
 
-**Use**: 1 turbidity sensor, 1 pump (with MOS module).
+***Use***: 1 turbidity sensor, 1 pump (with MOS module).
 
-**Codes Union**: "simple_pump_MOS", "turbiditySensor".
+***Codes Union***: "simple_pump_MOS", "turbiditySensor".
 
-**Description**: If the water is turbid than standard (the turbidity voltage is smaller), turn on the pump.
+***Description***: If the water is turbid than standard (the turbidity voltage is smaller), turn on the pump.
 
 ---
 
