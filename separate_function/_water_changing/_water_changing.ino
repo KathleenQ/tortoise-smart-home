@@ -3,7 +3,7 @@
  * Combination of turbidity sensor & pump (with MOS module).
  * FILE "simple_pump_MOS" && "turbiditySensor".
  * if "turbidity voltage < 'normal level'" (more turbid), turn ON the pump
- * 'normol level' --> 4.1 +- 0.3 V (shown in shop's product information) 【？？？？？】
+ * 'normol level' --> 4.1 +- 0.3 V (shown in shop's product information)
  * (more turbid, output VALUE is smaller)
  * CONNECTION:
  * Turbity sensor: Black->GND, Red->5V, Blue->AnalogIn
