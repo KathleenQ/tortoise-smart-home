@@ -12,7 +12,7 @@ IoT smart home artefact specially for pet tortoises
 
 ["html_framework"](https://github.com/KathleenQ/tortoise-smart-home/tree/master/html_framework): **Software basic setup** and **website framework** are shown.
 
-["combination"](https://github.com/KathleenQ/tortoise-smart-home/tree/master/combination): Working process is shown.
+["combination"](https://github.com/KathleenQ/tortoise-smart-home/tree/master/combination): Special **odd-even** setting with multi-function working.
 
 ["final_version"](https://github.com/KathleenQ/tortoise-smart-home/tree/master/final_version): **Line connection** is helped to re-create the artefact. **Website monitor** shows detailed descriptions for website control and usage. A **simple** (intermediate) test YouTube **demo** is also shown here.
 
