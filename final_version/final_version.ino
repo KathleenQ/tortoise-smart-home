@@ -40,7 +40,7 @@ unsigned char temp_read();
 //WiFi Connection
 char ssid[] = SECRET_SSID; //CHANGE actual SSID (name) & password in "wifi_secret.h"
 char pass[] = SECRET_PASS; //(use for WPA, or use as key for WEP)
-int keyIndex = 0;                 // your network key Index number (needed only for WEP)
+int keyIndex = 0; //your network key Index number (needed only for WEP)
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
@@ -72,7 +72,7 @@ RtcDS1302<ThreeWire> Rtc(myWire);
 
 //"Feeding"
 Servo myservo;
-const float turbidFeeding = 0.6; // "standard", not too turbid to feed
+const float turbidFeeding = 0.6; //"standard", not too turbid to feed
 int feedHr1 = 10; //(default) the pre-set feeding hour (8-20)
 int feedHr2 = 18;
 int feedMin = 0; //(default) (0,10,...50)

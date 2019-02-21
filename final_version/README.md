@@ -25,4 +25,4 @@ Here is a simple test demo taken on 15/02/2019. It's not a final demo, please pa
 
 As condition limitation, it only mainly test "water changing", "lighting" and "land-water swap" functions without showing the real-time website.
 
-[![Test Demo](img.youtube.com/vi/y2FGb_0lQKI/0.jpg)](http://www.youtube.com/watch?v=y2FGb_0lQKI)
+[![Test Demo](http://img.youtube.com/vi/y2FGb_0lQKI/0.jpg)](http://www.youtube.com/watch?v=y2FGb_0lQKI)
