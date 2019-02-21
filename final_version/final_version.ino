@@ -38,8 +38,9 @@ void temp_write(char WRT);
 unsigned char temp_read();
 
 //WiFi Connection
-char ssid[] = SECRET_SSID; //CHANGE actual ssid & password in "wifi_secret.h"
-char pass[] = SECRET_PASS;
+char ssid[] = SECRET_SSID; //CHANGE actual SSID (name) & password in "wifi_secret.h"
+char pass[] = SECRET_PASS; //(use for WPA, or use as key for WEP)
+int keyIndex = 0;                 // your network key Index number (needed only for WEP)
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
@@ -128,7 +129,8 @@ void setup() {
   while (status != WL_CONNECTED) { //attempt to connect to Wifi network
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
-    status = WiFi.begin(ssid, pass); //(if connect to WPA/WPA2 network, change this line~)
+    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+    status = WiFi.begin(ssid, pass);
     delay(10000); //wait 10s for connection
   }
   server.begin();
