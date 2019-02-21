@@ -17,7 +17,17 @@ Open with Arduino IDE using *Arduino UNO WiFi Rev.2* board.
 
 ![Website](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/website-monitor-200219.jpg)
 
-*Real time* could be read first. *Temperature* shows current water temperature value. *Land-water Swap* shows current brightness level and pressure condition. With judgement, it'll then show whether the ladder board is up or down. *Water Changing* shows whether the water is too turbid to turn on the pump.*Feeding* function needs you to reset and change the feeding time remotely. After double checking the turbidity voltage condition, the feeding device (which mainly controlled by a micro servo) will be shown whether it works or not. In *lighting*, 3 different brightness levels are remotely controlled through website button and its condition will be shown as well.
+***Real time*** could be read first. 
+
+***Temperature*** shows current water temperature value. 
+
+***Land-water Swap*** shows current brightness level and pressure condition. With judgement, it'll then show whether the ladder board is up or down. 
+
+***Water Changing*** shows whether the water is too turbid to turn on the pump.
+
+***Feeding*** function needs you to reset and change the feeding time remotely. After double checking the turbidity voltage condition, the feeding device (which mainly controlled by a micro servo) will be shown whether it works or not. 
+
+In ***lighting***, 3 different brightness levels are remotely controlled through website button and its condition will be shown as well.
 
 ## Simple Test Demo
 
