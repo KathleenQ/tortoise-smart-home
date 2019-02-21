@@ -10,6 +10,8 @@ Open with Arduino IDE using *Arduino UNO WiFi Rev.2* board.
 
 ## Line Connection Summary
 
+For the whole demo, you need to first upload program in Arduino IDE without connecting the LED lamp, then connect the USB port with *a portable battery* and connect the power line of LED as the last step. *(Due to "strong power demand" problem)*
+
 ![Line Connection](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/line-connection.jpg)
 
 ## Website Monitor 
