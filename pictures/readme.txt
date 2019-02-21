@@ -1,0 +1,1 @@
+Here is the place for pictures used in various folders' README of this GitHub repository.
