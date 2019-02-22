@@ -14,6 +14,8 @@ For the whole demo, you need to first upload program in Arduino IDE without conn
 
 ![Line Connection](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/line-connection.jpg)
 
+In addition, always drop the "ladder" board down for *"land-water swap"* function as default first.
+
 ## Website Monitor 
 *(updated website version on 22/2/2019)*:
 
