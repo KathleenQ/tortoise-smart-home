@@ -276,12 +276,14 @@ void loop() {
 
             //"Temperature"
             client.println("<h2><mark><i>Temperature:</i></mark></h2>");
+            client.println("<i><small>(only work for <mark>EVEN</mark> minutes)</small></i> <br />");
             client.print("<h3>Current water temperature is ");
             client.print(temperature);
             client.println(" C.</h3>");
 
             //"Land-water Swap"
             client.println("<h2><mark><i>Land-water Swap:</i></mark></h2>");
+            client.println("<i><small>(only work for <mark>EVEN</mark> minutes)</small></i> <br />");
             client.print("Current brightness level is ");
             client.print(brightnessValue);
             client.println("; <br />");
@@ -309,6 +311,7 @@ void loop() {
 
             //"Water Changing"
             client.println("<h2><mark><i>Water Changing:</i></mark></h2>");
+            client.println("<i><small>(only work for <mark>ODD</mark> minutes)</small></i> <br />");
             client.print("Current water turbidity voltage is ");
             client.print(turbidityVol);
             client.println("V; <br />");

@@ -15,9 +15,9 @@ For the whole demo, you need to first upload program in Arduino IDE without conn
 ![Line Connection](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/line-connection.jpg)
 
 ## Website Monitor 
-*(updated website version on 20/2/2019)*:
+*(updated website version on 22/2/2019)*:
 
-![Website](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/website-monitor-200219.jpg)
+![Website](https://github.com/KathleenQ/tortoise-smart-home/blob/master/pictures/website-monitor-2202.jpg)
 
 ***Real time*** could be read first. 
 
